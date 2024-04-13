@@ -17,11 +17,11 @@ import static io.github.x45iq.jtube.FileTools.*;
  * @author Artem Shein
  */
 public final class StreamingDataDownloader {
-    private static final long PACKET_SIZE = 102400;
     private final StreamingData streamingData;
     private final File folder;
     private final String fileName;
     private final int threadsCount;
+    private final long packetSize;
     private final int callbackTimeoutMils;
     private final Consumer<Progress> progressCallback;
 
@@ -30,6 +30,7 @@ public final class StreamingDataDownloader {
         this.folder = builder.folder;
         this.fileName = builder.fileName;
         this.threadsCount = builder.threadsCount;
+        this.packetSize = builder.packetSize;
         this.callbackTimeoutMils = builder.callbackTimeoutMils;
         this.progressCallback = builder.progressCallback;
     }
@@ -51,15 +52,16 @@ public final class StreamingDataDownloader {
         while (used < len) {
             long start = used;
             long end;
-            if (start + PACKET_SIZE > len) {
+            if (start + packetSize > len) {
                 end = len;
             } else {
-                end = used + PACKET_SIZE;
+                end = used + packetSize;
             }
             executorService.submit(new PacketDownloader(streamingData.url(), exportFile, start, end, downloaded::addAndGet, failCallback));
             used = end;
         }
         try {
+            exportFile.createNewFile();
             executorService.shutdown();
             while (!executorService.isTerminated() && !failFlag.get()) {
                 progressCallback.accept(new Progress(downloaded.get(), len));
@@ -93,6 +95,7 @@ public final class StreamingDataDownloader {
         private File folder = null;
         private String fileName = null;
         private int threadsCount = 40;
+        private long packetSize = 1024*100;//100kb
         private int callbackTimeoutMils = 1000;
         private Consumer<Progress> progressCallback = null;
 
@@ -117,6 +120,17 @@ public final class StreamingDataDownloader {
             this.folder = folder;
             return this;
         }
+        /**
+         * Sets download packet size
+         *
+         * @param packetSize size
+         * @return {@code Builder}
+         */
+        public Builder packetSize(long packetSize) {
+            this.packetSize = packetSize;
+            return this;
+        }
+
 
         /**
          * Sets progress callback
@@ -172,7 +186,7 @@ public final class StreamingDataDownloader {
             Objects.requireNonNull(folder);
             fileName = fileName == null ? createRandomFileName() : fileName;
             if (threadsCount <= 0) throw new IndexOutOfBoundsException("n > 0");
-            if (PACKET_SIZE <= 0) throw new IndexOutOfBoundsException("n > 0");
+            if (packetSize <= 0) throw new IndexOutOfBoundsException("n > 0");
             if (callbackTimeoutMils < 0) throw new IndexOutOfBoundsException("n >= 0");
             try {
                 return new StreamingDataDownloader((Builder) this.clone());

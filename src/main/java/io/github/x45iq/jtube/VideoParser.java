@@ -251,6 +251,7 @@ public final class VideoParser {
         JsonArray formats = initialResponse
                 .getAsJsonObject("streamingData")
                 .getAsJsonArray("adaptiveFormats");
+        if(formats==null)return;
         for (int i = 0; i < formats.size(); i++) {
             JsonObject format = formats.get(i).getAsJsonObject();
             if (format.has("type") && "FORMAT_STREAM_TYPE_OTF".equals(format.get("type").getAsString())) {
@@ -278,6 +279,7 @@ public final class VideoParser {
         JsonArray formats = initialResponse
                 .getAsJsonObject("streamingData")
                 .getAsJsonArray("formats");
+        if(formats==null)return;
         for (int i = 0; i < formats.size(); i++) {
             JsonObject format = formats.get(i).getAsJsonObject();
 

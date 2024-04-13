@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class UrlPatternsTool {
-    static final Pattern YOUTUBE_VIDEO_URL_REGEX = Pattern.compile("https://(www\\.|.{0})youtu(\\.be|be\\.com)/(shorts/|watch\\?v=|.{0})([0-9a-zA-Z_\\-]{11})");
+    static final Pattern YOUTUBE_VIDEO_URL_REGEX = Pattern.compile("https://(www\\.|.{0}|m\\.)youtu(\\.be|be\\.com)/(shorts/|watch\\?v=|.{0})([0-9a-zA-Z_\\-]{11})");
     static final Pattern YOUTUBE_PLAYLIST_URL_REGEX = Pattern.compile("https://(www\\.|.{0})youtu(\\.be|be\\.com)/playlist\\?list=([0-9a-zA-Z_\\-]{34})");
     static final Pattern YOUTUBE_CHANNEL_OLD_URL_REGEX = Pattern.compile("https://(www\\.|.{0})youtu(\\.be|be\\.com)/channel/([0-9a-zA-Z_\\-]{24})");
     static final Pattern YOUTUBE_CHANNEL_URL_REGEX = Pattern.compile("https://(www\\.|.{0})youtu(\\.be|be\\.com)/@([0-9a-zA-Z_\\-.]{3,30})");

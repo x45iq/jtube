@@ -29,7 +29,7 @@ jtube requires an installation of Java 8+
 To install from Gradle:
 
 ```gradle
-implementation 'io.github.x45iq:jtube:1.0.0'
+implementation 'io.github.x45iq:jtube:1.0.1'
 ```
 To install from Maven:
 
@@ -37,7 +37,7 @@ To install from Maven:
 <dependency>
     <groupId>io.github.x45iq</groupId>
     <artifactId>jtube</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 

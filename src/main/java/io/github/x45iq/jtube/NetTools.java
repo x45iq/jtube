@@ -41,8 +41,9 @@ class NetTools {
     static long getContentLen(String url) throws IOException {
         assert url != null;
         String len = Jsoup.connect(url)
-                .method(Connection.Method.HEAD)
+                .method(Connection.Method.POST)
                 .userAgent(RandomUserAgent.create())
+                .requestBody("x\u0000")
                 .ignoreContentType(true)
                 .execute().header("Content-Length");
         return Long.parseLong(len == null ? "0" : len);

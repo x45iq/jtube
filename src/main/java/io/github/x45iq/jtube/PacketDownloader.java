@@ -24,7 +24,6 @@ class PacketDownloader implements Runnable {
     PacketDownloader(String url, File file, long start, long end, LongConsumer callback, Runnable failCallback) {
         assert url != null;
         assert file != null;
-        assert file.isFile();
         assert start >= 0;
         assert end > 0;
         assert callback != null;
@@ -60,15 +59,15 @@ class PacketDownloader implements Runnable {
     private void download() throws IOException {
         try (RandomAccessFile accessFile = new RandomAccessFile(file, "rwd")) {
             accessFile.seek(start);
-            byte[] content = Jsoup
+            accessFile.write(Jsoup
                     .connect(url)
                     .ignoreContentType(true)
                     .method(Connection.Method.POST)
                     .userAgent(RandomUserAgent.create())
                     .header("Range", String.format("bytes=%s-%s", start, end))
+                    .requestBody("x\u0000")
                     .execute()
-                    .bodyAsBytes();
-            accessFile.write(content);
+                    .bodyAsBytes());
             callback.accept(end - start);
         }
     }
